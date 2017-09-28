@@ -1,0 +1,304 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "nicNameNestedReference": {
+      "type": "string"
+    },
+    "privateIPAddressNestedReference": {
+      "type": "string"
+    },
+    "vmNameNestedReference": {
+      "type": "string"
+    },
+    "computerNameNestedReference": {
+      "type": "string"
+    },
+    "networkInterfaceIdNestedReference": {
+      "type": "string"
+    },
+    "vmDataDisksReference": {
+      "type": "array",
+      "metadata": {
+        "description": "Disk object that represents data disks"
+      }
+    },
+    "imagePublisher": {
+      "type": "string"
+    },
+    "imageOffer": {
+      "type": "string"
+    },
+    "windowsOSVersion": {
+      "type": "string"
+    },
+
+    "numberOfVMs": {
+      "type": "int",
+      "minValue": 1,
+      "metadata": {
+        "description": "Number of Virtual Machines to deploy"
+      }
+    },
+    "Environment": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the environment in which to deploy and can consist of DEV = Development, TST = Test, STG = Staging and PRD = Production"
+      }
+    },
+    "EnvironmentCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "This is the environment count, for example Dev1. This is an int only and is the environment."
+      }
+    },
+    "Region": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the region we are looking to deploy this into and can consist of NEU, WEU, EUS and WUS"
+      }
+    },
+    "vmSize": {
+      "type": "string"
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for the Virtual Machine."
+      }
+    },
+    "existingVirtualNetworkResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET resource group"
+      }
+    },
+    "existingVirtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET"
+      }
+    },
+    "existingVirtualNetworkAddressRange": {
+      "type": "string",
+      "metadata": {
+        "Description": "Address range of the subnet created in the new VNET"
+      }
+    },
+    "existingSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the new Subnet that will be added to the existing VNET. Must be different from the Subnet that is being utilized by Domain Controller VMs"
+      }
+    },
+    "existingSubnetAddressRange": {
+      "type": "string",
+      "metadata": {
+        "Description": "Address range of the subnet created in the new VNET. Must not overlap with the Subnet address range that is being utilized by Domain Controller VMs"
+      }
+    },
+    "VMIPAddressRange": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address first segments for the Primary Domain Controller for example 192.168.0"
+      }
+    },
+    "VMIPAddressStart": {
+      "type": "int",
+      "metadata": {
+        "description": "IP Address last segment for VM, this is concatinated with the VMIPAddressRange to form the full IP address 192.168.0.[xxx]"
+      }
+    },
+    "assetLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of resources such as nested templates and DSC configurations that the main template is dependent"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin username for VM"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password for VM"
+      }
+    },
+    "domainToJoin": {
+      "type": "string",
+      "metadata": {
+        "description": "The FQDN of the AD domain"
+      }
+    },
+    "domainUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Username of the account on the domain"
+      }
+    },
+    "domainPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password of the account on the domain"
+      }
+    },
+    "domainJoinOptions": {
+      "type": "int",
+      "metadata": {
+        "description": "Set of bit flags that define the join options. Default value of 3 is a combination of NETSETUP_JOIN_DOMAIN (0x00000001) & NETSETUP_ACCT_CREATE (0x00000002) i.e. will join the domain and create the account on the domain. For more information see https://msdn.microsoft.com/en-us/library/aa392154(v=vs.85).aspx"
+      }
+    },
+    "ouPath": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional string. Specifies an organizational unit (OU) for the domain account. Enter the full distinguished name of the OU in quotation marks. Example: 'OU=testOU; DC=domain; DC=Domain; DC=com"
+      }
+    },
+  },
+  "variables": {
+    "NetworkSecurityGroupName": "[concat('NSG-',parameters('vmName'),'-',variables('var_fullEnvironment'))]",
+    "VMAvailabilitySetName": "[concat(parameters('vmName'),'-AvSet-',variables('var_fullEnvironment'))]",
+    "var_fullEnvironment": "[concat(parameters('Environment'),parameters('EnvironmentCount'),'-',parameters('Region'))]",
+    "var_fullBaseReference": "[concat(variables('var_fullEnvironment'),'-',parameters('vmName'))]",
+    "var_storageAccountName": "[concat('iac',toLower(replace(variables('var_fullBaseReference'),'-','')))]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('existingSubnetName'))]",
+    "vnetID": "[resourceId(parameters('existingVirtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('existingVirtualNetworkName'))]",
+    "dataDisksInitializationModulesURL": "[concat(parameters('assetLocation'),'/DSC/InitializeDataDisks.ps1.zip')]",
+    "dataDisksInitializationFunction": "InitializeDataDisks.ps1\\InitializeDataDisks"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[parameters('nicNameNestedReference')]",
+      "apiVersion": "2016-12-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "VMnicLoop",
+        "count": 1
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('privateIPAddressNestedReference')]",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('NetworkSecurityGroupName'))]"
+        }
+      },
+      "tags": {
+        "displayName": "VMx-NIC"
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmNameNestedReference')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "virtualMachineLoop",
+        "count": 1
+      },
+      "dependsOn": [
+        "VMnicLoop"
+      ],
+      "tags": {
+        "displayName": "VMx"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId(resourceGroup().name, 'Microsoft.Compute/availabilitySets', variables('VMAvailabilitySetName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "Standard_A2"
+        },
+        "osProfile": {
+          "computerName": "[parameters('computerNameNestedReference')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('imagePublisher')]",
+            "offer": "[parameters('imageOffer')]",
+            "sku": "[parameters('windowsOSVersion')]",
+            "version": "latest"
+          },
+          "dataDisks": "[parameters('vmDataDisksReference')]",
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[parameters('networkInterfaceIdNestedReference')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "name": "InitializeDataDisks",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-08-30",
+          "dependsOn": [
+            "[parameters('computerNameNestedReference')]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.21",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "ModulesUrl": "[variables('dataDisksInitializationModulesURL')]",
+              "ConfigurationFunction": "[variables('dataDisksInitializationFunction')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmNameNestedReference'),'/joindomain')]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "DomainJoinExtensionLoop",
+        "count": 1
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmNameNestedReference'),'/extensions','/InitializeDataDisks')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[parameters('domainToJoin')]",
+          "OUPath": "[parameters('ouPath')]",
+          "User": "[concat(parameters('domainToJoin'), '\\', parameters('domainUsername'))]",
+          "Restart": "true",
+          "Options": "[parameters('domainJoinOptions')]"
+        },
+        "protectedsettings": {
+          "Password": "[parameters('domainPassword')]"
+        }
+      }
+    }
+  ]
+}

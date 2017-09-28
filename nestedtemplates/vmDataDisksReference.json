@@ -1,0 +1,151 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "numberOfDataDisksPerVM": {
+      "type": "int"
+    },
+    "sizeOfEachDataDiskInGB": {
+      "type": "string",
+      "defaultValue": "1023"
+    }
+  },
+    "variables": {
+        "diskCaching": "None",
+      "diskArray": [
+        {
+          "lun": 0,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 1,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 2,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 3,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 4,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 5,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 6,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 7,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 8,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 9,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 10,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 11,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 12,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 13,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 14,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 15,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 16,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 17,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 18,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 19,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        },
+        {
+          "lun": 20,
+          "createOption": "Empty",
+          "caching": "[variables('diskCaching')]",
+          "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]"
+        }
+      ]
+    },
+    "resources": [],
+    "outputs": {
+      "result": {
+        "type": "array",
+        "value": "[take(variables('diskArray'),parameters('numberOfDataDisksPerVM'))]"
+      }
+    }
+}
