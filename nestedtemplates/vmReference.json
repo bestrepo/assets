@@ -292,7 +292,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-03-30",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('var_fullBaseReference'), copyindex(2)))]"
+            "[parameters('computerNameNestedReference')]"
           ],
           "tags": {
             "displayName": "VMx-diagnostics"
