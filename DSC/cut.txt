@@ -1,0 +1,34 @@
+        xSQLServerAvailabilityGroupListener AvailabilityGroupListener {
+            AvailabilityGroup    = "${deploymentPrefix}-sql-ag"
+            IpAddress            = "$SqlAlwaysOnAvailabilityGroupListenerIp/255.255.255.0"
+            InstanceName         = "MSSQLSERVER"
+            NodeName             = $env:COMPUTERNAME
+            Name                 = "${deploymentPrefix}-sql-ag"
+            Port                 = 59999
+
+            DependsOn            = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroup"
+            Ensure               = "Present"
+            PsDscRunAsCredential = $DomainCreds
+        }
+
+        xDatabase DeployBacPac {
+            Credentials      = $DomainCreds
+            BacPacPath       = "C:\setup\ContosoPayments.bacpac"
+            DatabaseName     = "ContosoClinic"
+            SqlServer        = $env:COMPUTERNAME
+            SqlServerVersion = "2016-SP1"
+
+            DependsOn        = @( "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroup", "[xRemoteFile]FileDownload" )
+            Ensure           = "Present"
+        }
+        xSQLServerAlwaysOnAvailabilityGroupDatabaseMembership DatabaseToAlwaysOn {
+            AvailabilityGroupName = "${deploymentPrefix}-sql-ag"
+            BackupPath            = "\\${deploymentPrefix}-sql-0\setup\"
+            DatabaseName          = "ContosoClinic"
+            SQLServer             = $env:COMPUTERNAME
+            SQLInstanceName       = "MSSQLSERVER"
+
+            DependsOn             = @("[xDatabase]DeployBacPac", "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroup" )
+            Ensure                = "Present"
+            PsDscRunAsCredential  = $SQLCreds
+        }
