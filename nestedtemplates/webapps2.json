@@ -202,7 +202,6 @@
       "name": "[variables('webAppWebAPIName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Web/serverFarms/', variables('appServicePlanName'))]"
       ],
       "tags": {
         "displayName": "Web API"
