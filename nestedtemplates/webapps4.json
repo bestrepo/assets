@@ -215,38 +215,6 @@
             {
               "Name": "Data:DefaultConnection:ConnectionString",
               "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDBname'), ';User Id=', parameters('sqlAdministratorLogin'), '@', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ';Password=', parameters('sqlAdministratorPassword'), ';')]"
-            },
-            {
-              "Name": "DefaultConnection",
-              "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDBname'), ';User Id=', parameters('sqlAdministratorLogin'), '@', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ';Password=', parameters('sqlAdministratorPassword'), ';')]"
-            },
-            {
-              "Name": "DocSdkSettings:DocumentDbPrimaryKey",
-              "Value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('cosmosDBAccountName')), '2015-04-08').primaryMasterKey]"
-            },
-            {
-              "Name": "DocSdkSettings:DocumentDbEndpoint",
-              "Value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', variables('cosmosDBAccountName'))).documentEndpoint]"
-            },
-            {
-              "Name": "StorageConfiguration:StorageConnection",
-              "Value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'), ';AccountKey=' , listKeys(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-05-01-preview').key1,';EndpointSuffix=core.windows.net' )]"
-            },
-            {
-              "Name": "DomainAllowedForCors:1",
-              "Value": "[concat('https://',parameters('environmentPrefixOne'),parameters('environmentPrefixOne'),parameters('PractitionerPortalNamePrefix'),'.azurewebsites.net')]"
-            },
-            {
-              "Name": "DomainAllowedForCors:2",
-              "Value": "[concat('https://',parameters('environmentPrefixOne'),parameters('environmentPrefixOne'),parameters('PatientPortalNamePrefix'),'.azurewebsites.net')]"
-            },
-            {
-              "Name": "PractitionerPortalDomain",
-              "Value": "[concat('https://',parameters('environmentPrefixOne'),parameters('environmentPrefixOne'),parameters('PractitionerPortalNamePrefix'),'.azurewebsites.net')]"
-            },
-            {
-              "Name": "PatientPortalDomain",
-              "Value": "[concat('https://',parameters('environmentPrefixOne'),parameters('environmentPrefixOne'),parameters('PatientPortalNamePrefix'),'.azurewebsites.net')]"
             }
           ]
         }
