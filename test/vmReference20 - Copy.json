@@ -696,36 +696,6 @@
           }
         }
       ]
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmNameNestedReference'),'/BuildAgent')]",
-      "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "customScriptExtensionLoop",
-        "count": 1
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmNameNestedReference'),'/extensions','/JsonADDomainExtension')]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.9",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": [
-            "https://raw.githubusercontent.com/bestrepo/assets/master/test/BuildAgent.ps1"
-          ]
-        },
-        "protectedSettings": {
-          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File BuildAgent.ps1",
-          "VSTSToken": "h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq",
-          "VSTSUrl": "https://armproject.visualstudio.com",
-          "windowsLogonAccount": "testvm",
-          "windowsLogonPassword": "JRsIJzP3o3SUdGSRVDgC"
-        }
-      }
-    }  ]
+    }  
+  ]
 }
