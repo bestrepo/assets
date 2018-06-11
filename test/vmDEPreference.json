@@ -1,0 +1,454 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "nicNameNestedReference": {
+      "type": "string"
+    },
+    "vmNameNestedReference": {
+      "type": "string"
+    },
+    "computerNameNestedReference": {
+      "type": "string"
+    },
+    "networkInterfaceIdNestedReference": {
+      "type": "string"
+    },
+    "EnvironmentCode": {
+      "type": "string"
+    },
+    "RegionalCode": {
+      "type": "string"
+    },
+    "EnvironmentCount": {
+      "type": "int"
+    },
+    "Service": {
+      "type": "string"
+    },
+    "ServiceCount": {
+      "type": "int"
+    },
+    "Component": {
+      "type": "string"
+    },
+    "ComponentCount": {
+      "type": "int"
+    },
+    "Device": {
+      "type": "string"
+    },
+    "DeviceCount": {
+      "type": "int"
+    },
+    "location": {
+      "type": "string"
+    },
+    "PCName": {
+      "type": "string"
+    },
+    "vmSize": {
+      "type": "string"
+    },
+    "osDiskType": {
+      "type": "string",
+      "metadata": {
+        "description": "The Storage type of the data Disks"
+      }
+    },
+    "dataDisksType": {
+      "type": "string"
+    },
+    "numberOfDataDisks": {
+      "type": "int"
+    },
+    "dataDiskSize": {
+      "type": "int"
+    },
+    "osDiskCaching": {
+      "type": "string"
+    },
+    "dataDisksCaching": {
+      "type": "string"
+    },
+    "diskNamingPrefix": {
+      "type": "string"
+    },
+    "existingVnetResourceGroupName": {
+      "type": "string"
+    },
+    "existingVNETname": {
+      "type": "string"
+    },
+    "existingSubnetName": {
+      "type": "string"
+    },
+    "existingNSGresorceGroupname": {
+      "type": "string"
+    },
+    "existingNSGname": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "domainToJoin": {
+      "type": "string"
+    },
+    "domainUsername": {
+      "type": "string"
+    },
+    "domainPassword": {
+      "type": "securestring"
+    },
+    "domainJoinOptions": {
+      "type": "int"
+    },
+    "ouPath": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "ResourceGroup": "[concat('IAC',parameters('EnvironmentCode'),parameters('EnvironmentCount'),parameters('RegionalCode'),'-',parameters('Service'),parameters('ServiceCount'),'-',parameters('Component'),parameters('ComponentCount'))]",
+    "virtualMachineName": "[concat('IAC',parameters('EnvironmentCode'),parameters('EnvironmentCount'),parameters('RegionalCode'),'-',parameters('Service'),parameters('ServiceCount'),'-',parameters('Component'),parameters('ComponentCount'),'-',parameters('Device'))]",
+    "dataDisksNameReference": "[concat('IAC',parameters('EnvironmentCode'),parameters('EnvironmentCount'),parameters('RegionalCode'),'-',parameters('Service'),parameters('ServiceCount'),'-',parameters('Component'),parameters('ComponentCount'),'-',parameters('Device'))]",
+    "vnetID": "[resourceId(parameters('existingVnetResourceGroupName'),concat('Microsoft.Network','/','virtualNetworks'),parameters('existingVNETname'))]",
+    "subnetRef": "[concat(variables('vnetID'), '/subnets/', parameters('existingSubnetName'))]",
+    "networkSecurityGroupID": "[resourceId(parameters('existingNSGresorceGroupname'),'Microsoft.Network/networkSecurityGroups',parameters('existingNSGname'))]",
+    "dataDiskArray": [
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 0,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 1,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 2,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 3,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 4,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 5,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 6,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 7,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 8,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 9,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 10,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 11,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 12,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 13,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 14,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 15,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 16,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 17,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 18,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 19,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 20,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 21,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 22,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 23,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 24,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 25,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 26,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 27,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 28,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 29,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 30,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      },
+      {
+        "diskSizeGB": "[parameters('dataDiskSize')]",
+        "lun": 31,
+        "caching": "[parameters('dataDisksCaching')]",
+        "createOption": "Empty"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[parameters('nicNameNestedReference')]",
+      "apiVersion": "2018-04-01",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "NICLoop",
+        "count": 1
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[variables('networkSecurityGroupID')]"
+        }
+      },
+      "tags": {
+        "displayName": "VMx-NIC"
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('vmNameNestedReference')]",
+      "apiVersion": "2017-03-30",
+      "location": "[parameters('location')]",
+      "properties": {
+        "osProfile": {
+          "computerName": "[parameters('computerNameNestedReference')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "windowsConfiguration": {
+            "provisionVmAgent": "true"
+          }
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[parameters('osDiskType')]"
+            },
+            "caching": "[parameters('dataDisksCaching')]"
+          },
+          "dataDisks": "[parameters('vmDataDisksReference')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[parameters('networkInterfaceIdNestedReference')]"
+            }
+          ]
+        }
+      },
+      "copy": {
+        "name": "VMLoop",
+        "count": 1
+      },
+      "dependsOn": [
+        "NICLoop"
+      ],
+      "resources": [
+        {
+          "name": "JsonADDomainExtension",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-08-30",
+          "dependsOn": [
+            "[concat(variables('virtualMachineName'),copyIndex(1))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "JsonADDomainExtension",
+            "typeHandlerVersion": "1.3",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "Name": "[parameters('domainToJoin')]",
+              "OUPath": "[parameters('ouPath')]",
+              "User": "[concat(parameters('domainToJoin'), '\\', parameters('domainUsername'))]",
+              "Restart": "true",
+              "Options": "[parameters('domainJoinOptions')]"
+            },
+            "protectedsettings": {
+              "Password": "[parameters('domainPassword')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "BuildAgent",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "customScriptExtensionLoop",
+        "count": 1
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmNameNestedReference'),'/extensions','/JsonADDomainExtension')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://raw.githubusercontent.com/bestrepo/assets/master/test/BuildAgent.ps1"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File BuildAgent.ps1",
+          "VSTSToken": "h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq",
+          "VSTSUrl": "https://armproject.visualstudio.com",
+          "windowsLogonAccount": "testvm",
+          "windowsLogonPassword": "JRsIJzP3o3SUdGSRVDgC"
+        }
+      }
+    }
+  ]
+}
