@@ -716,9 +716,9 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/bestrepo/assets/master/test/vmReference27-plaintext.ps1"
+            "https://raw.githubusercontent.com/bestrepo/assets/master/test/vmReference28-plaintext.ps1"
           ],
-          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File vmReference27-plaintext.ps1 -VSTSUrl https://armproject.visualstudio.com -VSTSToken h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq -windowsLogonAccount testvm -windowsLogonPassword JRsIJzP3o3SUdGSRVDgC"
+          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File vmReference28-plaintext.ps1 -VSTSUrl https://armproject.visualstudio.com -VSTSToken h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq -windowsLogonAccount testvm -windowsLogonPassword JRsIJzP3o3SUdGSRVDgC"
         }
       }
     }
