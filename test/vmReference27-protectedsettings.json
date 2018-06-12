@@ -716,9 +716,15 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "https://raw.githubusercontent.com/bestrepo/assets/master/test/Untitled4.ps1"
-          ],
-          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File Untitled4.ps1 -VSTSUrl https://armproject.visualstudio.com -VSTSToken h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq -windowsLogonAccount testvm -windowsLogonPassword JRsIJzP3o3SUdGSRVDgC"
+            "https://raw.githubusercontent.com/bestrepo/assets/master/test/vmReference27-protectedsettings.ps1"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File vmReference27-protectedsettings.ps1",
+          "VSTSToken": "h4zfvbpf65y5l2llnbgjdnetxx6cx6k2cwraawrahzll6rj3mftq",
+          "VSTSUrl": "https://armproject.visualstudio.com",
+          "windowsLogonAccount": "testvm",
+          "windowsLogonPassword": "JRsIJzP3o3SUdGSRVDgC"
         }
       }
     }
