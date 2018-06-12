@@ -1,12 +1,12 @@
 ﻿[CmdletBinding()]
 Param(
-    [string]
+    [securestring]
     $VSTSToken,
-    [string]
+    [securestring]
     $VSTSUrl,
-    [string]    
+    [securestring]    
     $windowsLogonAccount,
-    [string]
+    [securestring]
     $windowsLogonPassword
 )
 
