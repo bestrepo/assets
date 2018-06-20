@@ -2,4 +2,4 @@
     [string]
     $test
 )
-Out-File -FilePath 3.txt
+Out-File -FilePath $test
